@@ -29,13 +29,14 @@ const reducer = (state = INIT_STATE, action) => {
       return state;
   }
 };
+const API = 'https://hackatoon.herokuapp.com/api';
 
 const ProductContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, INIT_STATE);
 
   const getProductsData = async () => {
     let { data } = await axios(
-      `http://localhost:8000/products${window.location.search}`
+      `${API}/products${window.location.search}`
     );
     dispatch({
       type: "GET_PRODUCTS_DATA",
@@ -44,17 +45,17 @@ const ProductContextProvider = ({ children }) => {
   };
 
   const addProduct = (newTask) => {
-    axios.post("http://localhost:8000/products", newTask);
+    axios.post(`${API}/products`, newTask);
     getProductsData();
   };
 
   const deleteProduct = async (id) => {
-    await axios.delete(`http://localhost:8000/products/${id}`);
+    await axios.delete(`${API}/products/${id}`);
     getProductsData();
   };
 
   const editProduct = async (id, history) => {
-    let { data } = await axios(`http://localhost:8000/products/${id}`);
+    let { data } = await axios(`${API}/products/${id}`);
     dispatch({
       type: "EDIT_PRODUCT",
       payload: data,
@@ -64,14 +65,14 @@ const ProductContextProvider = ({ children }) => {
 
   const saveProduct = async (newProduct, history) => {
     await axios.patch(
-      `http://localhost:8000/products/${newProduct.id}`,
+      `${API}/products/${newProduct.id}`,
       newProduct
     );
     history.push("/products");
   };
 
   const getDetail = async (id) => {
-    const { data } = await axios(`http://localhost:8000/products/${id}`);
+    const { data } = await axios(`${API}/products/${id}`);
     dispatch({
       type: "GET_DETAIL_PRODUCT",
       payload: data,
@@ -79,12 +80,12 @@ const ProductContextProvider = ({ children }) => {
   };
 
   const checkAdmin = async(loginData,history) => {
-    let data = await axios.patch('http://localhost:8000/admin/1', loginData)  
+    let data = await axios.patch(`${API}/admin/1`, loginData)  
     history.push('/')
   }
 
   const logout = async(loginData) => {
-    let {data} = await axios.patch('http://localhost:8000/admin/1', loginData)  
+    let {data} = await axios.patch(`${API}/admin/1`, loginData)  
     window.location.replace('login')
   }
 
